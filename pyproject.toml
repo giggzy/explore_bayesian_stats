@@ -1,0 +1,20 @@
+[project]
+name = "rethinking-numpyro"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "altair>=5.5.0",
+    "arviz>=0.20.0",
+    "daft>=0.1.2",
+    "duckdb>=1.1.3",
+    "jupyter>=1.1.1",
+    "marimo>=0.9.27",
+    "networkx>=3.4.2",
+    "numpyro>=0.15.3",
+    "plotly>=5.24.1",
+    "polars>=1.16.0",
+    "pyarrow>=18.1.0",
+    "seaborn>=0.13.2",
+]
