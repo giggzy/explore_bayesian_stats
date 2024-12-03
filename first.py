@@ -89,7 +89,7 @@ def __(mo):
         r"""
         ## Explore the Howell Dataset
 
-        This is a dataset of weight and height of a population 
+        This is a dataset of weight and height of a population
         """
     )
     return
@@ -111,7 +111,7 @@ def __(pl, plt, sns):
     # All age vs height
     sns.scatterplot(data=adults, y="weight", x="height", ax=axes_h[0], color='blue', label='Adults')
     sns.scatterplot(data=children, y="weight", x="height", ax=axes_h[0], color='red', label='Children')
-    axes_h[0].set_title("Entire Dataset") 
+    axes_h[0].set_title("Entire Dataset")
 
     # Just Adults
     sns.scatterplot(data=adults, y="weight", x="height", ax=axes_h[1], color='blue', label='Adults')
@@ -125,9 +125,26 @@ def __(pl, plt, sns):
 
 
 @app.cell
-def __():
-    return
+def __(mo):
+    mo.md(
+        r"""
+        ## Causal Diagram for Height and Weight with Unobserved Confounder
 
+        This diagram illustrates how Height (H) influences Weight (W) and how an Unobserved variable influences Height.
+        """
+    )
+
+    # Define the causal model
+    causal_diagram = mo.Digraph()
+    causal_diagram.edge("Unobserved", "Height")
+    causal_diagram.edge("Height", "Weight")
+
+    # Render the causal diagram
+    causal_diagram.show()
+    return (causal_diagram,)
+
+def test_cell() -> bool:
+    return True
 
 if __name__ == "__main__":
     app.run()

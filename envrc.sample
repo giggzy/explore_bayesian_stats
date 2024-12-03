@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+
+# Python Setup
+uv sync
+
+# Environment variables
+# ---------------------
+
+# General
+export PYTHONPATH=.
