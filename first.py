@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.9.27"
+__generated_with = "0.9.30"
 app = marimo.App(width="medium")
 
 
@@ -84,6 +84,28 @@ def __(np, plt, sns):
 
 
 @app.cell
+def __(np, plt, sns):
+    # Create figure with two subplots
+    my_fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+
+    # Binomial distribution
+    n, p = 20, 0.5  # 20 trials, probability 0.5
+    binomial_data = np.random.binomial(n, p, 1000)
+    sns.histplot(binomial_data, discrete=True, ax=ax1)
+    ax1.set_title('Binomial Distribution\n(e.g., number of heads in 20 flips)')
+
+    # Normal distribution
+    mu, sigma = 10, 2  # mean=10, standard deviation=2
+    normal_data = np.random.normal(mu, sigma, 1000)
+    sns.histplot(normal_data, ax=ax2)
+    ax2.set_title('Normal Distribution\n(e.g., heights in a population)')
+
+    plt.tight_layout()
+    plt.show()
+    return ax1, ax2, binomial_data, mu, my_fig, n, normal_data, p, sigma
+
+
+@app.cell
 def __(mo):
     mo.md(
         r"""
@@ -124,8 +146,8 @@ def __(pl, plt, sns):
     return adults, axes_h, children, fig_h, howell
 
 
-@app.cell
-def __(mo):
+@app.cell(hide_code=True)
+def __(mo, plt):
     mo.md(
         r"""
         ## Causal Diagram for Height and Weight with Unobserved Confounder
@@ -134,17 +156,130 @@ def __(mo):
         """
     )
 
-    # Define the causal model
-    causal_diagram = mo.Digraph()
-    causal_diagram.edge("Unobserved", "Height")
-    causal_diagram.edge("Height", "Weight")
+    import daft
 
-    # Render the causal diagram
-    causal_diagram.show()
-    return (causal_diagram,)
+    # Create a new PGM
+    pgm = daft.PGM()
 
-def test_cell() -> bool:
-    return True
+    # Add nodes - coordinates are (x, y)
+    # observed=False creates dashed nodes
+    pgm.add_node("H", "H", 3, 3)
+    pgm.add_node("U", "U", 2, 2, observed=True)
+    pgm.add_node("W", "W", 3, 1)
+
+    # Add edges
+    pgm.add_edge("H", "W")
+    pgm.add_edge("U", "W")
+
+    # Render the PGM
+    pgm.render()
+    plt.show()
+    return daft, pgm
+
+
+@app.cell(hide_code=True)
+def __(np, plt, sns):
+    # W = bH + U
+
+    def simulate_weight(H: np.ndarray, beta: float, sigma: float) -> np.ndarray:
+        n_heights = len(H)
+
+        # unobserved noise
+        U = np.random.normal(loc=0, scale=sigma, size=n_heights)
+        return beta * H + U
+
+
+    n_heights = 100
+    min_height = 130
+    max_height = 170
+    H = np.random.uniform(min_height, max_height, n_heights)
+
+    # Simulate the weight
+    W = simulate_weight(H, beta=0.5, sigma=5)
+
+    # Plot
+    gen_weight_fig, axs = plt.subplots(1, 2, figsize=(8, 4))
+    gen_weight_fig.suptitle("Height and Weight Analysis", y=1.05)
+
+    # height
+    plt.sca(axs[0])
+    plt.hist(H, bins=25)
+    plt.xlabel("height")
+    plt.ylabel("frequency")
+    plt.title("Simulated Height")
+
+    # Height vs Weight
+    plt.sca(axs[1])
+    sns.scatterplot(x=H, y=W)
+    plt.xlabel("height")
+    plt.ylabel("weight")
+    plt.title("Simulated W vs H")
+    return (
+        H,
+        W,
+        axs,
+        gen_weight_fig,
+        max_height,
+        min_height,
+        n_heights,
+        simulate_weight,
+    )
+
+
+@app.cell(hide_code=True)
+def __(mo):
+    mo.md(r"""## Explore Grid Approximation""")
+    return
+
+
+@app.cell(hide_code=True)
+def __(mo):
+    mo.md(
+        r"""
+        ### Linear Regression
+
+        Estimate how the average weight changes with a change in height:
+
+        $$E[W_i | H_i] = \alpha + \beta H_i$$
+
+        - $E[W_i | H_i]$: **average weight** conditioned on height
+        - $\alpha$: **intercept** of line
+        - $\beta$: **slope** of line
+
+
+        ### Posterior Distribution
+
+        $$
+        p(\alpha, \beta, \sigma) = \frac{p(W_i | \alpha, \beta, \sigma) p(\alpha, \beta, \sigma)}{Z}
+        $$
+
+        - The only estimator in Bayesian data analysis
+
+        - $p(\alpha, \beta, \sigma)$ -- **Posterior**: Probability of a specific line (model)
+        - $p(W_i | \alpha, \beta, \sigma)$ -- **Likelihood**: The number of ways the generative proces (line) could have produced the data
+            - aka the "Garden of Forking Data" from Lecture 2
+        - $p(\alpha, \beta, \sigma)$ -- **Prior**: the previous Posterior (sometimes with no data)
+        - $Z$ -- **normalizing constant**
+
+        Common parameterization
+
+        $$
+        \begin{align}
+        W_i &\sim \text{Normal}(\mu_i, \sigma) \\
+        \mu_i &= \alpha + \beta H_i
+        \end{align}
+        $$
+
+        _$W$ is distributed normally with mean $\mu$ that is a linear function of $H$_
+        """
+    )
+    return
+
+
+@app.cell
+def __():
+    return
+
 
 if __name__ == "__main__":
     app.run()
