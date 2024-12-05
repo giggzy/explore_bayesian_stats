@@ -1,4 +1,5 @@
 import marimo
+from numpy import ndarray
 
 __generated_with = "0.9.30"
 app = marimo.App(width="medium")
@@ -91,17 +92,17 @@ def __(mo):
 @app.cell
 def __(np, stats):
     # Model function required for simulation
-    def linear_model(x: np.ndarray, intercept: float, slope: float) -> np.ndarray:
+    def linear_model(x: ndarray, intercept: float, slope: float) -> ndarray:
         return intercept + slope * x
 
     # Posterior function required for simulation
     def linear_regression_posterior(
-        x_obs: np.ndarray,
-        y_obs: np.ndarray,
-        intercept_grid: np.ndarray,
-        slope_grid: np.ndarray,
+        x_obs: ndarray,
+        y_obs: ndarray,
+        intercept_grid: ndarray,
+        slope_grid: ndarray,
         likelihood_prior_std: float = 1.0
-    ) -> np.ndarray:
+    ) -> ndarray:
 
         # Convert params to 1-d arrays
         if np.ndim(intercept_grid) > 1:
@@ -202,7 +203,7 @@ def __(INTERCEPT, N_DATA_POINTS, SLOPE, mo, np, plt, stats, x):
 @app.cell
 def __(line, mo, x1):
     _df = mo.sql(
-        f"""
+        """
         SELECT * FROM line;
         select * from x1
         """

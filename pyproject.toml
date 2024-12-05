@@ -26,3 +26,7 @@ dev = [
 
 [tool.pytest.ini_options]
 pythonpath = '.'
+
+[tool.pyright]
+typeCheckingMode = "basic"
+reportRedeclaration = false

@@ -1,4 +1,5 @@
 import marimo
+from numpy import ndarray
 
 __generated_with = "0.9.30"
 app = marimo.App(width="medium")
@@ -179,7 +180,7 @@ def __(mo, plt):
 def __(np, plt, sns):
     # W = bH + U
 
-    def simulate_weight(H: np.ndarray, beta: float, sigma: float) -> np.ndarray:
+    def simulate_weight(H: ndarray, beta: float, sigma: float) -> ndarray:
         n_heights = len(H)
 
         # unobserved noise
