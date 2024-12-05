@@ -23,6 +23,7 @@ def __():
     import seaborn as sns
     import polars as pl
     import numpy as np
+
     return mo, np, pl, plt, sns
 
 
@@ -66,11 +67,11 @@ def __(np, plt, sns):
 
     # Create figure with subplots
     fig, axes = plt.subplots(2, 3, figsize=(15, 10))
-    fig.suptitle('Common Probability Distributions', fontsize=16)
+    fig.suptitle("Common Probability Distributions", fontsize=16)
 
     # Plot the data
-    norm_plt = axes[0,0]
-    norm_plt.set_title('Normal')
+    norm_plt = axes[0, 0]
+    norm_plt.set_title("Normal")
     sns.histplot(normal, kde=True, bins=10, ax=norm_plt)
 
     sns.histplot(uniform, kde=True, bins=10, ax=axes[0, 1])
@@ -92,13 +93,13 @@ def __(np, plt, sns):
     n, p = 20, 0.5  # 20 trials, probability 0.5
     binomial_data = np.random.binomial(n, p, 1000)
     sns.histplot(binomial_data, discrete=True, ax=ax1)
-    ax1.set_title('Binomial Distribution\n(e.g., number of heads in 20 flips)')
+    ax1.set_title("Binomial Distribution\n(e.g., number of heads in 20 flips)")
 
     # Normal distribution
     mu, sigma = 10, 2  # mean=10, standard deviation=2
     normal_data = np.random.normal(mu, sigma, 1000)
     sns.histplot(normal_data, ax=ax2)
-    ax2.set_title('Normal Distribution\n(e.g., heights in a population)')
+    ax2.set_title("Normal Distribution\n(e.g., heights in a population)")
 
     plt.tight_layout()
     plt.show()
@@ -120,24 +121,21 @@ def __(mo):
 @app.cell
 def __(pl, plt, sns):
     # Open the Howell dataset
-    howell = pl.read_csv('data/Howell1.csv', separator=';')
-
+    howell = pl.read_csv("data/Howell1.csv", separator=";")
 
     fig_h, axes_h = plt.subplots(1, 2, figsize=(15, 5))
 
-    #print(howell.columns)
+    # print(howell.columns)
     adults = howell.filter(pl.col("age") > 18)
     children = howell.filter(pl.col("age") <= 18)
 
-
     # All age vs height
-    sns.scatterplot(data=adults, y="weight", x="height", ax=axes_h[0], color='blue', label='Adults')
-    sns.scatterplot(data=children, y="weight", x="height", ax=axes_h[0], color='red', label='Children')
+    sns.scatterplot(data=adults, y="weight", x="height", ax=axes_h[0], color="blue", label="Adults")
+    sns.scatterplot(data=children, y="weight", x="height", ax=axes_h[0], color="red", label="Children")
     axes_h[0].set_title("Entire Dataset")
 
     # Just Adults
-    sns.scatterplot(data=adults, y="weight", x="height", ax=axes_h[1], color='blue', label='Adults')
-
+    sns.scatterplot(data=adults, y="weight", x="height", ax=axes_h[1], color="blue", label="Adults")
 
     axes_h[1].set_title("Adults")
 
@@ -187,7 +185,6 @@ def __(np, plt, sns):
         # unobserved noise
         U = np.random.normal(loc=0, scale=sigma, size=n_heights)
         return beta * H + U
-
 
     n_heights = 100
     min_height = 130
@@ -275,11 +272,8 @@ def __(mo):
     )
     return
 
-
-@app.cell
-def __():
-    return
-
+def test_cell() -> bool:
+    return True
 
 if __name__ == "__main__":
     app.run()
