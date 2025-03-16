@@ -1,0 +1,41 @@
+# https://taskfile.dev
+
+version: '3'
+
+
+tasks:
+
+  marimo:
+    desc: Launch Marimo notebook
+    cmds:
+      - uv run marimo run marimo/explore_grid_approximation.py
+
+  marimo:first:
+    desc: Launch first Marimo notebook
+    cmds:
+      - uv run marimo run first.py
+
+  test:
+    desc: Run all tests
+    cmds:
+      - uv run pytest
+
+  test:single:
+    desc: Run a specific test file
+    cmds:
+      - uv run pytest {{.CLI_ARGS}}
+
+  deps:
+    desc: Sync dependencies
+    cmds:
+      - uv sync
+
+  new:notebook:
+    desc: Create a new Marimo notebook
+    cmds:
+      - uv run marimo create {{.CLI_ARGS}}
+
+  export:
+    desc: Export Marimo notebook to HTML
+    cmds:
+      - uv run marimo export {{.CLI_ARGS}} --format html
